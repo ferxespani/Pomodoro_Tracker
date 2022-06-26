@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Pomodoro_Tracker.Api.HostedServices;
+using Pomodoro_Tracker.Api.HostedServices.Interfaces;
 
 namespace Pomodoro_Tracker.Api;
 
 public class Program
 {
-	public static void Main(string[] args)
+	public static async Task Main(string[] args)
 	{
 		var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,9 @@ public class Program
 			options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 		});
 
+		builder.Services.AddHostedService<SeedDataHostedService>();
+		builder.Services.AddScoped<ISeedProcessingService, SeedProcessingService>();
+
 		var app = builder.Build();
 
 		if (app.Environment.IsDevelopment())
@@ -30,6 +35,6 @@ public class Program
 
 		app.MapControllers();
 
-		app.Run();
+		await app.RunAsync();
 	}
 }

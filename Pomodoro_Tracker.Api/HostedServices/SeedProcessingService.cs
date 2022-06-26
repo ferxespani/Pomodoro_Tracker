@@ -1,6 +1,5 @@
 ﻿using Pomodoro_Tracker.Api.HostedServices.Interfaces;
 using Pomodoro_Tracker.Api.Models;
-using System.Threading;
 
 namespace Pomodoro_Tracker.Api.HostedServices
 {
@@ -16,9 +15,9 @@ namespace Pomodoro_Tracker.Api.HostedServices
 		{
 			await _context.Database.EnsureCreatedAsync(cancellationToken);
 
-			if (cancellationToken.IsCancellationRequested) await Task.CompletedTask;
+			if (cancellationToken.IsCancellationRequested) return;
 
-			if (_context.PomodoroTasks.Any()) await Task.CompletedTask;
+			if (_context.PomodoroTasks.Any()) return;
 
 			var pomodoroTask = new PomodoroTask
 			{

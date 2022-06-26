@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Pomodoro_Tracker.Api.HostedServices;
 using Pomodoro_Tracker.Api.HostedServices.Interfaces;
 
@@ -18,7 +17,6 @@ public class Program
 
 		builder.Services.AddDbContext<PomodoroContext>(options =>
 		{
-			options.EnableSensitiveDataLogging();
 			options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 		});
 

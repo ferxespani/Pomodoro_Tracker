@@ -1,0 +1,14 @@
+<div *ngIf="task">
+    <h2>{{ task.id }}</h2>
+    <div>
+        Name:
+        <input [(ngModel)]="task.description" placeholder="Description">
+    </div>
+    <div>
+        Duration:
+        <input [(ngModel)]="task.duration" placeholder="Duration">
+    </div>
+    <button (click)="updateTask(task)" *ngIf="task.id">Save</button>
+    <button (click)="createTask(task)" *ngIf="!task.id">Create</button>
+    <button (click)="deleteTask(task)" *ngIf="task.id">Delete</button>
+</div>

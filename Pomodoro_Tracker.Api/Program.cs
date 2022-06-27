@@ -23,6 +23,12 @@ public class Program
 		builder.Services.AddHostedService<SeedDataHostedService>();
 		builder.Services.AddScoped<ISeedProcessingService, SeedProcessingService>();
 
+		builder.Services.AddCors(options => options.AddPolicy(name: "PomodoroTasksOrigins",
+			policy =>
+			{
+				policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+			}));
+
 		var app = builder.Build();
 
 		if (app.Environment.IsDevelopment())
@@ -30,6 +36,8 @@ public class Program
 			app.UseSwagger();
 			app.UseSwaggerUI();
 		}
+
+		app.UseCors("PomodoroTasksOrigins");
 
 		app.MapControllers();
 

@@ -1,0 +1,23 @@
+<button (click)="initNewTask()">Add new task</button>
+
+<table>
+  <thead>
+    <th>Id</th>
+    <th>Description</th>
+    <th>Duration</th>
+    <th>Creation date</th>
+  </thead>
+  <tbody>
+    <tr *ngFor="let task of tasks">
+      <td>{{ task.id }}</td>
+      <td>{{ task.description }}</td>
+      <td>{{ task.duration }}</td>
+      <td>{{ task.creationDateUtc }}</td>
+      <td>
+        <button (click)="editTask(task)">Edit</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<app-edit-task [task]="taskToEdit" (tasksUpdated)="updateTaskList($event)"></app-edit-task>

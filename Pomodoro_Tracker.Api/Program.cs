@@ -26,7 +26,7 @@ public class Program
 		builder.Services.AddCors(options => options.AddPolicy(name: "PomodoroTasksOrigins",
 			policy =>
 			{
-				policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+				policy.WithOrigins("http://pomodoro-tracker.ua:8081").AllowAnyMethod().AllowAnyHeader();
 			}));
 
 		var app = builder.Build();

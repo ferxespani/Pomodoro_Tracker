@@ -9,6 +9,7 @@ import { PomodoroTaskService } from './services/pomodoro-task.service';
 })
 export class AppComponent {
   title = 'Pomodoro_Tracker.Client';
+  displayedColumns: string[] = ['description', 'duration', 'creationDateUtc', 'editButton'];
   tasks: PomodoroTask[] = [];
   taskToEdit?: PomodoroTask;
 

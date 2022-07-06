@@ -1,6 +1,8 @@
 <mat-card>
   <button mat-raised-button color="primary" (click)="initNewTask()">Add new task</button>
 
+  <app-timer></app-timer>
+
   <table mat-table [dataSource]="tasks">
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef>Description</th>

@@ -12,11 +12,13 @@ import { MatInputModule } from '@angular/material/input';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EditTaskComponent } from './components/edit-task/edit-task.component';
+import { TimerComponent } from './components/timer/timer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EditTaskComponent
+    EditTaskComponent,
+    TimerComponent
   ],
   imports: [
     BrowserModule,

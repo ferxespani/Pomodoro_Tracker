@@ -1,0 +1,37 @@
+.timer-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.timer-window {
+    height: 300px;
+    width: 60%;
+    background-color: rgb(187, 75, 75);
+}
+
+.timer {
+    color: azure;
+    letter-spacing: 2px;
+    font-size: 100px;
+    text-align: center;
+    padding-top: 50px;
+}
+
+.start-stop-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 35px;
+}
+
+.start-button,
+.stop-button {
+    color: azure;
+    border-color: azure;
+    font-size: 20px;
+    font-weight: 100;
+    padding: 0 60px;
+}
+
+.start-button {
+    margin-right: 15px;
+}

@@ -35,3 +35,8 @@
 .start-button {
     margin-right: 15px;
 }
+
+.stop-button:disabled {
+    color: darkgray;
+    border-color: darkgray;
+}

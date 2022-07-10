@@ -1,9 +1,21 @@
 <div class="timer-wrapper">
     <div class="timer-window">
-        <div class="timer">25:00</div>
+        <div class="timer"><span *ngIf="leftTime; else elseBlock">{{ leftTime | tramsformSeconds }}</span></div>
+        <ng-template #elseBlock>{{ defaultTime | tramsformSeconds }}</ng-template>
         <div class="start-stop-buttons">
-            <button mat-stroked-button class="start-button">START</button>
-            <button mat-stroked-button class="stop-button">STOP</button>
+            <button 
+                (click)="startPauseResumePomodoroTask()"
+                mat-stroked-button
+                class="start-button">
+                    START
+            </button>
+            <button
+                (click)="stopDonePomodoroTask()"
+                mat-stroked-button
+                [disabled]="!this.taskIsStarted"
+                class="stop-button">
+                    STOP
+            </button>
         </div>
     </div>
 </div>

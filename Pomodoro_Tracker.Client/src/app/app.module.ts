@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Routes, RouterModule, Router } from '@angular/router'
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -13,12 +15,19 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EditTaskComponent } from './components/edit-task/edit-task.component';
 import { TimerComponent } from './components/timer/timer.component';
+import { TramsformSecondsPipe } from './pipes/tramsform-seconds.pipe';
+
+const routes: Routes = [
+  { path: '', component: AppComponent },
+  { path: 'edit', component: EditTaskComponent },
+];
 
 @NgModule({
   declarations: [
     AppComponent,
     EditTaskComponent,
-    TimerComponent
+    TimerComponent,
+    TramsformSecondsPipe
   ],
   imports: [
     BrowserModule,
@@ -26,6 +35,7 @@ import { TimerComponent } from './components/timer/timer.component';
     HttpClientModule,
     FormsModule,
     BrowserAnimationsModule,
+    RouterModule.forRoot(routes),
     MatButtonModule,
     MatCardModule,
     MatTableModule,

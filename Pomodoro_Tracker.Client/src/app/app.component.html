@@ -1,27 +1,29 @@
 <mat-card>
   <button mat-raised-button color="primary" (click)="initNewTask()">Add new task</button>
 
-  <app-timer></app-timer>
+  <app-timer [currentTask]="currentTask" [leftTime]="currentTask?.duration" (tasksUpdated)="updateTaskList($event)"></app-timer>
 
   <table mat-table [dataSource]="tasks">
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef>Description</th>
-      <td mat-cell *matCellDef="let task"> {{task.description}} </td>
+      <td mat-cell *matCellDef="let task"> {{ task.description }} </td>
     </ng-container>
 
     <ng-container matColumnDef="duration">
       <th mat-header-cell *matHeaderCellDef>Duration</th>
-      <td mat-cell *matCellDef="let task"> {{task.duration}} </td>
+      <td mat-cell *matCellDef="let task"> {{ task.duration | tramsformSeconds }} </td>
     </ng-container>
 
     <ng-container matColumnDef="creationDateUtc">
       <th mat-header-cell *matHeaderCellDef>Creation date (UTC)</th>
-      <td mat-cell *matCellDef="let task"> {{task.creationDateUtc}} </td>
+      <td mat-cell *matCellDef="let task"> {{ task.creationDateUtc }} </td>
     </ng-container>
 
     <ng-container matColumnDef="editButton">
       <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let task"> <button mat-raised-button (click)="editTask(task)">Edit</button> </td>
+      <td mat-cell *matCellDef="let task"> 
+        <button routerLink="/edit" mat-raised-button (click)="editTask(task)">Edit</button> 
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pomodoro_Tracker.Api", "Pomodoro_Tracker.Api.csproj", "{6F78CD27-2498-4714-90A2-05D603648F40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pomodoro_Tracker", "..\Pomodoro_Tracker\Pomodoro_Tracker.csproj", "{10BBFC62-8C85-4095-AFE7-67544DD40B68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,12 @@ Global
 		{6F78CD27-2498-4714-90A2-05D603648F40}.Deploy|Any CPU.Build.0 = Deploy|Any CPU
 		{6F78CD27-2498-4714-90A2-05D603648F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F78CD27-2498-4714-90A2-05D603648F40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10BBFC62-8C85-4095-AFE7-67544DD40B68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10BBFC62-8C85-4095-AFE7-67544DD40B68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10BBFC62-8C85-4095-AFE7-67544DD40B68}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{10BBFC62-8C85-4095-AFE7-67544DD40B68}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{10BBFC62-8C85-4095-AFE7-67544DD40B68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10BBFC62-8C85-4095-AFE7-67544DD40B68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

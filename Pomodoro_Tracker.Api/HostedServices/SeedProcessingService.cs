@@ -1,5 +1,5 @@
 ﻿using Pomodoro_Tracker.Api.HostedServices.Interfaces;
-using Pomodoro_Tracker.Api.Models;
+using Pomodoro_Tracker.Models;
 
 namespace Pomodoro_Tracker.Api.HostedServices
 {

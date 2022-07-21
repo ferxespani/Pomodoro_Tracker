@@ -1,78 +1,75 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Pomodoro_Tracker.Api.Models;
+using Pomodoro_Tracker.Models;
+using Pomodoro_Tracker.Services;
 
 namespace Pomodoro_Tracker.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks")]
     [ApiController]
     public class PomodoroTasksController : ControllerBase
     {
-        private readonly PomodoroContext _context;
+        private readonly IPomodoroTaskService _pomodoroTaskService;
 
-        public PomodoroTasksController(PomodoroContext context)
+        public PomodoroTasksController(IPomodoroTaskService pomodoroTaskService)
         {
-            _context = context;
+            _pomodoroTaskService = pomodoroTaskService ?? throw new ArgumentNullException(nameof(pomodoroTaskService));
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PomodoroTask>>> Get()
+        [HttpGet(Name = nameof(GetTaskList))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTaskList()
         {
-	        return await _context.PomodoroTasks
-		        .Where(t => !t.IsDeleted)
-		        .ToListAsync();
+            List<PomodoroTaskDetail> tasks = await _pomodoroTaskService.GetTaskList();
+            return Ok(tasks);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PomodoroTask>> Get(Guid id)
+        [HttpGet("{taskId:Guid}", Name = nameof(GetTaskById))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTaskById([FromRoute] Guid taskId)
         {
-	        var pomodoroTask = await _context.PomodoroTasks.FindAsync(id);
+            PomodoroTaskDetail task = await _pomodoroTaskService.GetTask(taskId);
 
-            if (pomodoroTask == null)
-            {
+            if (task is null)
                 return NotFound();
-            }
 
-            return pomodoroTask;
+            return Ok(task);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, PomodoroTask pomodoroTask)
+        [HttpPost(Name = nameof(CreateTask))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateTask([FromBody] PomodoroTaskForCreate taskForCreate)
         {
-            if (id != pomodoroTask.Id)
-            {
-                return BadRequest();
-            }
+            PomodoroTaskDetail createdTask = await _pomodoroTaskService.CreateTask(taskForCreate);
 
-            _context.Entry(pomodoroTask).State = EntityState.Modified;
+            return CreatedAtAction(
+                actionName: nameof(GetTaskById),
+                routeValues: new { taskId = createdTask.Id },
+                value: createdTask);
+        }
 
-            await _context.SaveChangesAsync();
-
+        [HttpPut("{taskId:Guid}", Name = nameof(UpdateTask))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateTask([FromRoute] Guid taskId, [FromBody] PomodoroTaskForUpdate taskForUpdate)
+        {
+            await _pomodoroTaskService.UpdateTask(taskId, taskForUpdate);
             return NoContent();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<PomodoroTask>> Create(PomodoroTask pomodoroTask)
+        [HttpDelete("{taskId:Guid}", Name = nameof(DeleteTask))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteTask([FromRoute] Guid taskId)
         {
-	        await _context.PomodoroTasks.AddAsync(pomodoroTask);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Create), new { id = pomodoroTask.Id }, pomodoroTask);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Remove(Guid id)
-        {
-	        var pomodoroTask = await _context.PomodoroTasks.FirstOrDefaultAsync(t => t.Id == id);
-            if (pomodoroTask == null)
-            {
-                return NotFound();
-            }
-
-            pomodoroTask.IsDeleted = true;
-            await _context.SaveChangesAsync();
-
+	        await _pomodoroTaskService.DeleteTask(taskId);
             return NoContent();
         }
     }

@@ -1,0 +1,13 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.custom-color {
+  background-color: #1f4d7a;
+  color: whitesmoke;
+}
+
+.add-task-button {
+  background-color: #a94442;
+  color: whitesmoke;
+}

@@ -8,7 +8,7 @@ import { PomodoroTask } from '../models/pomodoro-task';
   providedIn: 'root'
 })
 export class PomodoroTaskService {
-  url = "PomodoroTasks";
+  url = "tasks";
 
   constructor(private httpClient: HttpClient) { }
 
@@ -16,15 +16,15 @@ export class PomodoroTaskService {
     return this.httpClient.get<PomodoroTask[]>(`${environment.apiUrl}/${this.url}`);
   }
 
-  public create(task: PomodoroTask) : Observable<PomodoroTask[]> {
-    return this.httpClient.post<PomodoroTask[]>(`${environment.apiUrl}/${this.url}`, task);
+  public create(task: PomodoroTask) : Observable<PomodoroTask> {
+    return this.httpClient.post<PomodoroTask>(`${environment.apiUrl}/${this.url}`, task);
   }
 
-  public update(task: PomodoroTask) : Observable<PomodoroTask[]> {
-    return this.httpClient.put<PomodoroTask[]>(`${environment.apiUrl}/${this.url}/${task.id}`, task);
+  public update(task: PomodoroTask) : Observable<any> {
+    return this.httpClient.put<any>(`${environment.apiUrl}/${this.url}/${task.id}`, task);
   }
 
-  public delete(id: string) : Observable<PomodoroTask[]> {
-    return this.httpClient.delete<PomodoroTask[]>(`${environment.apiUrl}/${this.url}/${id}`);
+  public delete(id: string) : Observable<any> {
+    return this.httpClient.delete<any>(`${environment.apiUrl}/${this.url}/${id}`);
   }
 }

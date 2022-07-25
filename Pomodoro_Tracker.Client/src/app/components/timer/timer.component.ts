@@ -1,9 +1,10 @@
-import { ReturnStatement } from '@angular/compiler';
-import { Component, Input, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 
-import { ButtonType } from 'src/app/button-type';
+import { ButtonType } from 'src/app/enums/button-type';
 import { PomodoroTask } from 'src/app/models/pomodoro-task';
 import { PomodoroTaskService } from 'src/app/services/pomodoro-task.service';
+import {CallService} from "../../services/call.service";
+import {Observable} from "rxjs/internal/Observable";
 
 @Component({
   selector: 'app-timer',
@@ -11,10 +12,9 @@ import { PomodoroTaskService } from 'src/app/services/pomodoro-task.service';
   styleUrls: ['./timer.component.css'],
 })
 export class TimerComponent implements OnInit, AfterViewInit {
-  @Input() currentTask?: PomodoroTask;
-  @Input() leftTime?: number;
-  @Output() tasksUpdated = new EventEmitter<PomodoroTask[]>();
-  
+  public currentTask?: PomodoroTask;
+  public leftTime?: number;
+
   public taskIsStarted: boolean = false;
   public defaultTime: number = 1800;
 
@@ -23,12 +23,21 @@ export class TimerComponent implements OnInit, AfterViewInit {
   private startPauseButton!: HTMLElement | null;
   private stopButton!: HTMLElement | null;
 
-  constructor(private pomodoroTasksService: PomodoroTaskService) {}
+  private currentTask$: Observable<PomodoroTask> = this.callService.getCurrentTask();
+
+  constructor(private pomodoroTasksService: PomodoroTaskService,
+              private callService: CallService) {}
 
   ngOnInit(): void {
     if (!this.leftTime) {
       this.leftTime = this.defaultTime;
     }
+
+    this.currentTask$
+      .subscribe((currentTask: PomodoroTask) => {
+        this.currentTask = currentTask;
+        this.leftTime = currentTask.duration;
+      });
   }
 
   ngAfterViewInit(): void {
@@ -89,9 +98,9 @@ export class TimerComponent implements OnInit, AfterViewInit {
   private handleTaskDeleting(): void {
     if (this.currentTask === undefined) return;
     if (!this.currentTask.id) return;
-    
+
     this.pomodoroTasksService
         .delete(this.currentTask.id)
-        .subscribe((tasks: PomodoroTask[]) => this.tasksUpdated.emit(tasks));
+        .subscribe(() => this.callService.sendClickCall());
   }
 }

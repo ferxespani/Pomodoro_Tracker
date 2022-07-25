@@ -6,11 +6,11 @@
 .timer-window {
     height: 300px;
     width: 60%;
-    background-color: rgb(187, 75, 75);
+    background-color: #a94442;
 }
 
 .timer {
-    color: azure;
+    color: whitesmoke;
     letter-spacing: 2px;
     font-size: 100px;
     text-align: center;

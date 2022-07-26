@@ -3,8 +3,8 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ButtonType } from 'src/app/enums/button-type';
 import { PomodoroTask } from 'src/app/models/pomodoro-task';
 import { PomodoroTaskService } from 'src/app/services/pomodoro-task.service';
-import {CallService} from "../../services/call.service";
-import {Observable} from "rxjs/internal/Observable";
+import { CallService } from "../../services/call.service";
+import { Observable } from "rxjs/internal/Observable";
 
 @Component({
   selector: 'app-timer',

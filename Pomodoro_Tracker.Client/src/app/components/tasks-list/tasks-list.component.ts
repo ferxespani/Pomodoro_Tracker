@@ -40,12 +40,25 @@ export class TasksListComponent implements OnInit {
   }
 
   public deleteTask(id: string): void {
-    this.dialog
+    let dialogRef = this.dialog
       .open(ConfirmationDialogComponent, {
         data: { id: id }
-      })
+      });
+
+    dialogRef.componentInstance.title = 'Delete task';
+    dialogRef.componentInstance.content = 'Are you sure you want to delete the task?';
+    dialogRef.componentInstance.firstButtonTitle = 'No';
+    dialogRef.componentInstance.secondButtonTitle = 'Yes';
+
+    dialogRef
       .afterClosed()
-      .subscribe(() => this.getTasks());
+      .subscribe((data: any) => {
+        if (data.id && data.id === id) {
+          this.pomodoroTaskService
+            .delete(id)
+            .subscribe(() => this.getTasks());
+        }
+    })
   }
 
   private getTasks(): void {

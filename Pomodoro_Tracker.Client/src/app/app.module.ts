@@ -16,7 +16,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { AppComponent } from './app.component';
 import { EditTaskComponent } from './components/edit-task/edit-task.component';
 import { TimerComponent } from './components/timer/timer.component';
-import { TramsformSecondsPipe } from './pipes/tramsform-seconds.pipe';
+import { TransformSecondsPipe } from './pipes/transform-seconds.pipe';
 import { CommonModule } from '@angular/common';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
@@ -27,7 +27,7 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     AppComponent,
     EditTaskComponent,
     TimerComponent,
-    TramsformSecondsPipe,
+    TransformSecondsPipe,
     ToolbarComponent,
     TasksListComponent,
     ConfirmationDialogComponent

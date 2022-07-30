@@ -1,7 +1,8 @@
 <div class="timer-wrapper">
-    <div class="timer-window">
+    <div class="timer-window"
+         [ngClass]="{'timer-window-task-color': !isBreak, 'timer-window-break-color': isBreak}">
         <div class="timer"><span *ngIf="leftTime; else elseBlock">{{ leftTime | transformSeconds }}</span></div>
-        <ng-template #elseBlock>{{ defaultTime | transformSeconds }}</ng-template>
+        <ng-template #elseBlock>{{ defaultTaskTime | transformSeconds }}</ng-template>
         <div class="start-stop-buttons">
             <button
                 (click)="handleStartButtonClick()"
@@ -12,7 +13,6 @@
             <button
                 (click)="handleStopButtonClick()"
                 mat-stroked-button
-                [disabled]="!this.taskIsStarted"
                 class="stop-button">
                     STOP
             </button>

@@ -3,5 +3,6 @@ export enum ButtonType {
     STOP = "STOP",
     PAUSE = "PAUSE",
     RESUME = "RESUME",
-    DONE = "DONE"
+    DONE = "DONE",
+    SKIP = "SKIP"
 }

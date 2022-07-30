@@ -1,8 +1,8 @@
-import { TaskState } from "./task-state";
-import { ReadyState } from "./ready-state";
+import { TimerState } from "./timer-state";
 import { ExecutingState } from "./executing-state";
+import { ShortBreakState } from "./short-break-state";
 
-export class PausedState extends  TaskState {
+export class PausedState extends  TimerState {
 
   public override handleStartButtonClick(): void {
     this.timerComponent.resumeTask();
@@ -11,6 +11,7 @@ export class PausedState extends  TaskState {
 
   public override handleStopButtonClick() {
     this.timerComponent.doneTask();
-    this.timerComponent.changeTaskState(new ReadyState(this.timerComponent));
+    this.timerComponent.startShortBreak();
+    this.timerComponent.changeTaskState(new ShortBreakState(this.timerComponent));
   }
 }

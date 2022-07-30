@@ -1,8 +1,8 @@
-import { TaskState } from "./task-state";
+import { TimerState } from "./timer-state";
 import { PausedState } from "./paused-state";
 import { ReadyState } from "./ready-state";
 
-export class ExecutingState extends TaskState {
+export class ExecutingState extends TimerState {
 
   public override handleStartButtonClick(): void {
     this.timerComponent.pauseTask();

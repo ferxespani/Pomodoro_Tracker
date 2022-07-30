@@ -1,6 +1,6 @@
 import { TimerComponent } from "../timer.component";
 
-export abstract class TaskState {
+export abstract class TimerState {
   protected timerComponent!: TimerComponent;
 
   constructor(timerComponent: TimerComponent) {

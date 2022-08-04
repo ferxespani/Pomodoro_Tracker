@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
-import { Observable } from "rxjs/internal/Observable";
+import { finalize, Subscription } from "rxjs";
 
 import { PomodoroTask } from "../../models/pomodoro-task";
 import { PomodoroTaskService } from "../../services/pomodoro-task.service";
@@ -13,12 +13,13 @@ import { CallService } from "../../services/call.service";
   templateUrl: './tasks-list.component.html',
   styleUrls: ['./tasks-list.component.css']
 })
-export class TasksListComponent implements OnInit {
+export class TasksListComponent implements OnInit, OnDestroy {
 
   public displayedColumns: string[] = ['description', 'duration', 'creationDateUtc', 'actions'];
   public tasks: PomodoroTask[] = [];
 
-  private clickCall$: Observable<void> = this.callService.getClickCall();
+  private taskAddedCall$!: Subscription;
+  private taskDeletedCall$!: Subscription;
 
   constructor(public dialog: MatDialog,
               private pomodoroTaskService: PomodoroTaskService,
@@ -26,7 +27,21 @@ export class TasksListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTasks();
-    this.clickCall$.subscribe(() => this.getTasks());
+    this.taskAddedCall$ = this.callService
+      .getTaskAddedCall()
+      .subscribe(() => {
+        this.getTasks();
+    });
+    this.taskDeletedCall$ = this.callService
+      .getTaskDeletedCall()
+      .subscribe(() => {
+        this.getTasks();
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.taskAddedCall$.unsubscribe();
+    this.taskDeletedCall$.unsubscribe();
   }
 
   public updateTaskList(): void {
@@ -64,11 +79,18 @@ export class TasksListComponent implements OnInit {
   private getTasks(): void {
     this.pomodoroTaskService
       .getAll()
+      .pipe(
+        finalize(() => this.callService.sendTaskListIsUpdatedCall())
+      )
       .subscribe((result: PomodoroTask[]) => {
-        this.tasks = result
-        if (this.tasks.length > 0) {
-          this.callService.sendCurrentTask(this.tasks[0]);
-        }
+        this.tasks = result.sort(TasksListComponent.descendingTaskSort);
+        window.localStorage.setItem('todos', JSON.stringify(result));
       });
+  }
+
+  private static descendingTaskSort(firstTask: PomodoroTask, secondTask: PomodoroTask): number {
+    let firstTaskDate: Date = new Date(firstTask.creationDateUtc!);
+    let secondTaskDate: Date = new Date(secondTask.creationDateUtc!);
+    return secondTaskDate.getTime() - firstTaskDate.getTime();
   }
 }

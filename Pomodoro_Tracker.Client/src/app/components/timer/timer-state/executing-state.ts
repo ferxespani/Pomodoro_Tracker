@@ -6,11 +6,11 @@ export class ExecutingState extends TimerState {
 
   public override handleStartButtonClick(): void {
     this.timerComponent.pauseTask();
-    this.timerComponent.changeTaskState(new PausedState(this.timerComponent));
+    this.timerComponent.changeTimerState(new PausedState(this.timerComponent));
   }
 
   public override handleStopButtonClick() {
     this.timerComponent.stopTask();
-    this.timerComponent.changeTaskState(new ReadyState(this.timerComponent));
+    this.timerComponent.changeTimerState(new ReadyState(this.timerComponent));
   }
 }

@@ -20,6 +20,8 @@ export class ToolbarComponent implements OnInit {
     this.dialog
       .open(EditTaskComponent)
       .afterClosed()
-      .subscribe(() => this.callService.sendClickCall());
+      .subscribe(() => {
+        this.callService.sendTaskAddedCall()
+      });
   }
 }

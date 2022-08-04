@@ -2,31 +2,38 @@ import { Injectable } from '@angular/core';
 import { Subject } from "rxjs";
 import { Observable } from "rxjs/internal/Observable";
 
-import { PomodoroTask } from "../models/pomodoro-task";
-
 @Injectable({
   providedIn: 'root'
 })
 export class CallService {
 
-  private buttonClickSubject: Subject<void> = new Subject<void>();
-  private currentTaskSubject: Subject<PomodoroTask> = new Subject<PomodoroTask>();
+  private taskIsAdded: Subject<void> = new Subject<void>();
+  private taskIsDeleted: Subject<void> = new Subject<void>();
+  private taskListIsUpdated: Subject<void> = new Subject<void>();
 
   constructor() { }
 
-  public sendClickCall(): void {
-    this.buttonClickSubject.next();
+  public sendTaskAddedCall(): void {
+    this.taskIsAdded.next();
   }
 
-  public getClickCall(): Observable<void> {
-    return this.buttonClickSubject.asObservable();
+  public getTaskAddedCall(): Observable<void> {
+    return this.taskIsAdded.asObservable();
   }
 
-  public sendCurrentTask(currentTask: PomodoroTask): void {
-    this.currentTaskSubject.next(currentTask);
+  public sendTaskDeletedCall(): void {
+    this.taskIsDeleted.next();
   }
 
-  public getCurrentTask(): Observable<PomodoroTask>{
-    return this.currentTaskSubject.asObservable();
+  public getTaskDeletedCall(): Observable<void> {
+    return this.taskIsDeleted.asObservable();
+  }
+
+  public sendTaskListIsUpdatedCall(): void {
+    this.taskListIsUpdated.next();
+  }
+
+  public getTaskListIsUpdatedCall(): Observable<void> {
+    return this.taskListIsUpdated.asObservable();
   }
 }

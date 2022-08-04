@@ -18,14 +18,17 @@ export class TimerComponent implements OnInit, AfterViewInit, OnDestroy {
   public leftTime!: number;
   public isBreak: boolean = false;
   public defaultTaskTime: number = 1800;
+  public seriesNumber: number = 0;
 
-  private defaultBreakTime: number = 300;
+  private tasksToDo: PomodoroTask[] = [];
+  private defaultShortBreakTime: number = 300;
+  private defaultLongBreakTime: number = 900;
   private startButton!: HTMLElement | null;
   private stopButton!: HTMLElement | null;
   private taskState!: TimerState;
-  private currentTask$!: Subscription;
   private deleteTask$!: Subscription;
   private timer$!: Subscription;
+  private taskListIsUpdatedCall$!: Subscription;
 
   constructor(private pomodoroTasksService: PomodoroTaskService,
               private callService: CallService) {
@@ -34,15 +37,19 @@ export class TimerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (!this.leftTime) {
+    if (!this.leftTime)
       this.leftTime = this.defaultTaskTime;
-    }
+    if (!window.localStorage.getItem('series'))
+      window.localStorage.setItem('series', '0');
+    else
+      this.seriesNumber = Number(window.localStorage.getItem('series'));
 
-    this.currentTask$ = this.callService.getCurrentTask()
-      .subscribe((currentTask: PomodoroTask) => {
-        this.currentTask = currentTask;
-        this.leftTime = currentTask.duration;
-      });
+    this.updateTasksToDo();
+    this.taskListIsUpdatedCall$ = this.callService
+      .getTaskListIsUpdatedCall()
+      .subscribe(() => {
+        this.updateTasksToDo()
+    });
   }
 
   ngAfterViewInit(): void {
@@ -52,12 +59,12 @@ export class TimerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.currentTask$.unsubscribe();
     this.deleteTask$.unsubscribe();
     this.timer$.unsubscribe();
+    this.taskListIsUpdatedCall$.unsubscribe();
   }
 
-  public changeTaskState(taskState: TimerState) {
+  public changeTimerState(taskState: TimerState) {
     this.taskState = taskState;
   }
 
@@ -75,23 +82,19 @@ export class TimerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public pauseTask(): void {
-    if (this.startButton) {
+    if (this.startButton)
       this.startButton.innerText = ButtonType.RESUME;
-    }
+    if (this.stopButton)
+      this.stopButton.innerText = ButtonType.DONE;
 
     this.timer$.unsubscribe();
-
-    if (this.stopButton) {
-      this.stopButton.innerText = ButtonType.DONE;
-    }
   }
 
   public resumeTask(): void {
-    this.startTask();
-
-    if (this.stopButton) {
+    if (this.stopButton)
       this.stopButton.innerText = ButtonType.STOP;
-    }
+
+    this.startTask();
   }
 
   public handleStopButtonClick(): void {
@@ -99,9 +102,8 @@ export class TimerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public stopTask(): void {
-    if (this.startButton) {
+    if (this.startButton)
       this.startButton.innerText = ButtonType.START;
-    }
 
     this.leftTime = this.currentTask ? this.currentTask.duration : this.defaultTaskTime;
     (this.stopButton as HTMLButtonElement).disabled = true;
@@ -109,70 +111,76 @@ export class TimerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public doneTask(): void {
-    if (this.startButton) {
+    if (this.startButton)
       this.startButton.innerText = ButtonType.START;
-    }
-
-    if (this.stopButton) {
+    if (this.stopButton)
       this.stopButton.innerText = ButtonType.STOP;
-    }
+
+    window.localStorage.setItem('series', `${++this.seriesNumber}`);
 
     this.handleTaskDeleting();
-    this.currentTask = new PomodoroTask();
-    this.leftTime = this.defaultTaskTime;
-
     this.timer$.unsubscribe();
   }
 
-  public startShortBreak(): void {
+  public startBreak(): void {
     this.isBreak = true;
-    this.leftTime = this.defaultBreakTime;
-
+    this.leftTime = this.shouldBeLongBreak() ? this.defaultLongBreakTime : this.defaultShortBreakTime;
     this.timer$ = this.createTimerSubscription();
 
-    if (this.startButton) {
+    if (this.startButton)
       this.startButton.innerText = ButtonType.PAUSE;
-    }
-
-    if (this.stopButton) {
+    if (this.stopButton)
       this.stopButton.innerText = ButtonType.SKIP;
-    }
   }
 
-  public pauseShortBreak(): void {
-    if (this.startButton) {
+  public pauseBreak(): void {
+    if (this.startButton)
       this.startButton.innerText = ButtonType.RESUME;
-    }
 
     this.timer$.unsubscribe();
   }
 
-  public resumeShortBreak(): void {
-    if (this.startButton) {
+  public resumeBreak(): void {
+    if (this.startButton)
       this.startButton.innerText = ButtonType.PAUSE;
-    }
 
     this.timer$ = this.createTimerSubscription();
   }
 
-  public skipShortBreak(): void {
-    if (this.startButton) {
+  public skipBreak(): void {
+    if (this.startButton)
       this.startButton.innerText = ButtonType.START;
-    }
-
-    if (this.stopButton) {
+    if (this.stopButton)
       this.stopButton.innerText = ButtonType.STOP;
-    }
 
     (this.stopButton as HTMLButtonElement).disabled = true;
     this.isBreak = false;
-    this.currentTask = new PomodoroTask();
-    this.leftTime = this.defaultTaskTime;
-
+    this.updateTasksToDo();
     this.timer$.unsubscribe();
   }
 
-  private createTimerSubscription() {
+  private updateTasksToDo(): void {
+    this.tasksToDo = JSON.parse(window.localStorage.getItem('todos')!);
+    if (this.tasksToDo.length > 0) {
+      this.currentTask = this.tasksToDo[0];
+      if (!this.isBreak)
+        this.leftTime = this.tasksToDo[0] ? this.tasksToDo[0].duration : this.defaultTaskTime;
+    }
+    else {
+      TimerComponent.resetSeriesCounter();
+      this.leftTime = this.defaultTaskTime;
+    }
+  }
+
+  private static resetSeriesCounter(): void {
+    window.localStorage.setItem('series', '0');
+  }
+
+  private shouldBeLongBreak(): boolean {
+    return this.seriesNumber % 4 === 0;
+  }
+
+  private createTimerSubscription(): Subscription {
     return interval(1000)
       .pipe(
         map(_ => {
@@ -190,6 +198,6 @@ export class TimerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.deleteTask$ = this.pomodoroTasksService
         .delete(this.currentTask.id)
-        .subscribe(() => this.callService.sendClickCall());
+        .subscribe(() => this.callService.sendTaskDeletedCall());
   }
 }

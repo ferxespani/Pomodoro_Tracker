@@ -5,7 +5,7 @@ export class ReadyState extends TimerState {
 
   public override handleStartButtonClick(): void {
     this.timerComponent.startTask();
-    this.timerComponent.changeTaskState(new ExecutingState(this.timerComponent));
+    this.timerComponent.changeTimerState(new ExecutingState(this.timerComponent));
   }
 
   public override handleStopButtonClick(): void {

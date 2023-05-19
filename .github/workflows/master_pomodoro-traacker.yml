@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: ./Pomodoro_Tracker.Client/dist
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,4 +53,4 @@ jobs:
           app-name: 'pomodoro-traacker'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BB2B88C12F604E52A91345C280576DA7 }}
-          package: .
+          package: ./Pomodoro_Tracker.Client/dist
